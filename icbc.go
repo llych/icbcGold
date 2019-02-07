@@ -18,7 +18,7 @@ import (
 )
 
 // URLGold 工商的黄金价格URL
-var URLGold = "http://www.1icbc.com.cn/ICBCDynamicSite/Charts/GoldTendencyPicture.aspx"
+var URLGold = "http://www.icbc.com.cn/ICBCDynamicSite/Charts/GoldTendencyPicture.aspx"
 
 // Cache 缓存, 设置 告警的阈值 , +-0.5
 type Cache struct {
