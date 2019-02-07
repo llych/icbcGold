@@ -18,7 +18,7 @@ import (
 )
 
 // URLGold 工商的黄金价格URL
-var URLGold = "http://www.icbc.com.cn/ICBCDynamicSite/Charts/GoldTendencyPicture.aspx"
+var URLGold = "http://www.1icbc.com.cn/ICBCDynamicSite/Charts/GoldTendencyPicture.aspx"
 
 // Cache 缓存, 设置 告警的阈值 , +-0.5
 type Cache struct {
@@ -53,11 +53,12 @@ func IcbcGold() {
 
 	if res, err = httpClient.Get(URLGold); err != nil {
 		log.Error().Msgf("请求失败, %v", err.Error())
-		os.Exit(3)
+		return
 	}
 	defer res.Body.Close()
 	if doc, err = goquery.NewDocumentFromReader(res.Body); err != nil {
 		log.Error().Msgf("goquer解析失败, %v", err.Error())
+		return
 	}
 	// Attr 获取属性
 	flag := false
@@ -96,7 +97,7 @@ func wechat(msg string) {
 		res *http.Response
 		err error
 	)
-	if res, err = http.PostForm("http://xxxx.com/weixin", url.Values{"msg": {msg}}); err != nil {
+	if res, err = http.PostForm("http://api.xx.com/weixin", url.Values{"msg": {msg}}); err != nil {
 		log.Error().Msg("发送失败")
 	} else {
 		log.Info().Msgf("发送成功")
