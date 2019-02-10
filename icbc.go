@@ -57,7 +57,7 @@ func IcbcGold() {
 	}
 	defer res.Body.Close()
 	if doc, err = goquery.NewDocumentFromReader(res.Body); err != nil {
-		log.Error().Msgf("goquer解析失败, %v", err.Error())
+		log.Error().Msgf("goquery解析失败, %v", err.Error())
 		return
 	}
 	// Attr 获取属性
@@ -65,7 +65,7 @@ func IcbcGold() {
 	doc.Find(`#TABLE1 > tbody > tr:nth-child(2) > td:nth-child(3)`).Each(func(i int, s *goquery.Selection) {
 		flag = true
 		price, _ = strconv.ParseFloat(strings.TrimSpace(s.Text()), 64)
-		log.Info().Msgf("当前价格: %v", price)
+		log.Info().Msgf("当前价格: %v, 告警阈值: %v", price, cache.Alarm)
 		Alarm(price)
 	})
 	if !flag {
@@ -80,9 +80,12 @@ func Alarm(price float64) {
 	inc := int(math.Abs(price-cache.Alarm) / 0.5)
 	if inc >= 1 {
 		if price-cache.Alarm > 0 {
+			if cache.Alarm != 0 {
+				go wechat(fmt.Sprintf("当前价格: %v [上升]", price))
+				log.Info().Msgf("当前价格: %v [上升]", price)
+			}
 			cache.Alarm = cache.Alarm + float64(inc)*0.5
-			log.Info().Msgf("当前价格: %v [上升]", price)
-			go wechat(fmt.Sprintf("当前价格: %v [上升]", price))
+
 		} else {
 			cache.Alarm = cache.Alarm - float64(inc)*0.5
 			log.Info().Msgf("当前价格: %v [下降]", price)
